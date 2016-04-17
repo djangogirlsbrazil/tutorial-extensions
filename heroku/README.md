@@ -1,56 +1,56 @@
-# Deploy to Heroku (as well as PythonAnyhere)
+# Coloque seu website no Heroku (como em PythonAnyhere)
 
-It's always good for a developer to have a couple of different deployment options under their belt.   Why not try deploying your site to Heroku, as well as PythonAnywhere?
+è sempre bom para uma desenvolvedora ter algumas opções de desenvolvimento na manga. Por que não tentar colocar seu site no Heroku, como fizemos com o PythonAnywhere?
 
-[Heroku](http://heroku.com/) is also free for small applications that don't have too many visitors, but it's a bit more tricky to get deployed.
+[Heroku](http://heroku.com/) também é grátis para pequenas aplicações que não têm muitos visitantes, mas é um pouquinho mais complicado para colocar o site.
 
-We will be following this tutorial: https://devcenter.heroku.com/articles/getting-started-with-django, but we pasted it here so it's easier for you.
+Seguiremos este tutorial: https://devcenter.heroku.com/articles/getting-started-with-django, mas colamos aqui para faciliatr as coisas pra você.
 
 
-## The `requirements.txt` file
+## O arquivo `requirements.txt` 
 
-If you didn't create one before, we need to create a `requirements.txt` file to tell Heroku what Python packages need to be installed on our server.
+Se você não criou um antes, precisaremos criar um arquivo `requirements.txt` para dizer ao Heroku que pacotes de Python precisam ser instalados em nosso servidor.
 
-But first, Heroku needs us to install a few new packages. Go to your console with `virtualenv` activated and type this:
+Mas antes o Heroku precisa que instalemos alguns novos pacotes. Vá para seu console com o `virtualenv` ativado e digite isso:
 
     (myvenv) $ pip install dj-database-url gunicorn whitenoise
 
-After the installation is finished, go to the `djangogirls` directory and run this command:
+Depois que a instalação terminar, vá para o diretório `djangogirls` e execute esse comando:
 
     (myvenv) $ pip freeze > requirements.txt
 
-This will create a file called `requirements.txt` with a list of your installed packages (i.e. Python libraries that you are using, for example Django :)).
+Isso vai criar um arquivo chamado `requirements.txt` com a lista dos seus pacotes instalados (isso é, das bibliotecas de Python que você está usando, por exemplo o Django :)).
 
-> __Note__: `pip freeze` outputs a list of all the Python libraries installed in your virtualenv, and the `>` takes the output of `pip freeze` and puts it into a file. Try running `pip freeze` without the `> requirements.txt` to see what happens!
+> __Nota__: `pip freeze` retorna um lista de todas as biblitecas de Python instaladas em seu ambiente virtual (virtualenv) e o sinal `>` pega o resultado de `pip freeze` e coloca dentro de um arquivo. Tente executar `pip freeze` sem o `> requirements.txt` para ver o que acontece!
 
-Open this file and add the following line at the bottom:
+Abra esse arquivo e acrescente a seguinte linha no final:
 
     psycopg2==2.5.4
 
-This line is needed for your application to work on Heroku.
+Essa linha é necessária para que sua aplicação funcione no Heroku.
 
 
 ## Procfile
 
-Another thing Heroku wants is a Procfile. This tells Heroku which commands to run in order to start our website. Open up your code editor, create a file called `Procfile` in `djangogirls` directory and add this line:
+Outra coisa que o Heroku vai precisar é um Procfile. Isso vai dizer ao Heroku quais comandos executar para criar nosso website. Abra seu editor de código e crie um arquivo chamado `Procfile` no diretório `djangogirls` e acrescente a seguinte linha:
 
     web: gunicorn mysite.wsgi
 
-This line means that we're going to be deploying a `web` application, and we'll do that by running the command `gunicorn mysite.wsgi` (`gunicorn` is a program that's like a more powerful version of Django's `runserver` command).
+Essa linha vai dizer que iremos colocar uma aplicação `web` e vamos fazer isso executando o comando `gunicorn mysite.wsgi` (`gunicorn` é um programa que é tipo uma versão mais poderosa do comando `runserver` no Django).
 
-Then save it. Done!
+Salve e está pronto!
 
-## The `runtime.txt` file
+## O arquivo `runtime.txt` 
 
-We also need to tell Heroku which Python version we want to use. This is done by creating a `runtime.txt` in the `djangogirls` directory using your editor's "new file" command, and putting the following text (and nothing else!) inside:
+Precisamos também dizer ao Heroku que versão do Python queremos usar. Isso é feito criando o arquivo `runtime.txt` no diretório `djangogirls` usando o comnado "new file" ou "novo arquivo" em seu editor de código e colocando o seguinte texto (e nada mais!) dentro do arquivo:
 
     python-3.4.2
 
 ## `mysite/local_settings.py`
 
-Because it's more restrictive than PythonAnywhere, Heroku wants to use different settings from the ones we use on our locally (on our computer). Heroku wants to use Postgres while we use SQLite for example. That's why we need to create a separate file for settings that will only be available for our local environment.
+Como ele é um pouco mais restritivo que o PythonAnywhere, o Heroku quer usar configurações diferentes daquelas que usamos localmente (em nosso comutador). O Heroku vai querer usar Postgres enquanto usamos SQLite, por exemplo. É por isso que precisamos criar um arquivo separado para as configurações que ficarão diponíveis apenas em nosso ambiente local.
 
-Go ahead and create `mysite/local_settings.py` file. It should contain your `DATABASE` setup from your `mysite/settings.py` file. Just like that:
+Vá em frente e crie o arquivo `mysite/local_settings.py`. Ele deverá conter a configuração de seu `DATABASE` a partir de seu arquivo `mysite/settings.py`. Bem assim:
 
 ```python
 import os
@@ -66,11 +66,11 @@ DATABASES = {
 DEBUG = True
 ```
 
-Then just save it! :)
+E é só salvar! :)
 
 ## mysite/settings.py
 
-Another thing we need to do is modify our website's `settings.py` file. Open `mysite/settings.py` in your editor and add the following lines at the end of the file:
+Outra coisa que precisaremos fazer é modificar o arquivo `settings.py` de nosso website. Abra `mysite/settings.py` em seu editor e acrescente as seguintes linhas ao final do código:
 
 ```python
 import dj_database_url
@@ -88,44 +88,44 @@ except ImportError:
     pass
 ```
 
-It'll do necessary configuration for Heroku and also it'll import all of your local settings if `mysite/local_settings.py` exists.
+Isso irá fazer a configuração necessária para o Heroku e também importará todas as suas configurações locais se o `mysite/local_settings.py` existir.
 
-Then save the file.
+E então salve o aqruivo.
 
 ## mysite/wsgi.py
 
-Open the `mysite/wsgi.py` file and add these lines at the end:
+Abra o arquivo `mysite/wsgi.py` e acrescente essas linhas ao final:
 
 ```python
 from whitenoise.django import DjangoWhiteNoise
 application = DjangoWhiteNoise(application)
 ```
 
-All right!
+Tá pronto!
 
-## Heroku account
+## Conta no Heroku
 
-You need to install your Heroku toolbelt which you can find here (you can skip the installation if you've already installed it during setup): https://toolbelt.heroku.com/
+Você precisa intalar sua barra de ferramentas do Heroku que você pode acesar aqui (você pode pular essa instalação se já tiver instalado a barra durante o setup): https://toolbelt.heroku.com/
 
-> When running the Heroku toolbelt installation program on Windows make sure to choose "Custom Installation" when being asked which components to install. In the list of components that shows up after that please additionally check the checkbox in front of "Git and SSH".
+> Quando estiver executrando o programa de instalção da barra de ferramentas do Heroku no Windows marque a opção "Custom Installation" quando for perguntada quais componentes quer instalar. Na lista de componentes logo a seguir, por favor marque também a caixa que corresponde a "Git and SSH".
 
-> On Windows you also must run the following command to add Git and SSH to your command prompt's `PATH`: `setx PATH "%PATH%;C:\Program Files\Git\bin"`. Restart the command prompt program afterwards to enable the change.
+> No Windows você precisa executar o seguinte comando (no prompt de comando) para adicionar o Git e o SSH ao seu `PATH`: `setx PATH "%PATH%;C:\Program Files\Git\bin"`. Reinicie o prompt de comando depois para habilitar essa mudança.
 
-> After restarting your command prompt, don't forget to go to your `djangogirls` folder again and activate your virtualenv! (Hint: [Check the Django installation chapter](http://tutorial.djangogirls.org/en/django_installation/index.html#working-with-virtualenv))
+> Depois que reiniciar seu prompt de comando, não se esqueça de ir para a sua pasta `djangogirls` novamente e ativar seu ambiente virtual (virtualenv)! (Dica: [Consulte o capítulo sobre a instalação do Django](http://tutorial.djangogirls.org/en/django_installation/index.html#working-with-virtualenv))
 
-Please also create a free Heroku account here: https://id.heroku.com/signup/www-home-top
+Crie também uma conta gratuita no Heroku aqui: https://id.heroku.com/signup/www-home-top
 
-Then authenticate your Heroku account on your computer by running this command:
+E então autentique sua conta no Heroku em seu computador executando esse comando:
 
     $ heroku login
 
-In case you don't have an SSH key this command will automatically create one. SSH keys are required to push code to the Heroku.
+Caso você não tenha uma chave SSH esse comando vai automaticamente criar uma. As chaves SSH são necessárias para fazer o push do código no Heroku.
 
 ## Git commit
 
-Heroku uses git for its deployments.  Unlike PythonAnywhere, you can push to Heroku directly, without going via Github.  But we need to tweak a couple of things first.
+O Heroku usa o git para fazer sua implementação. Ao contrário do PythonAnywhere, você pode fazer o push diretamente para o Heroku, sem precisar fazer isso via Github, mas precisaremos ajustar algumas coisas antes.
 
-Open the file named `.gitignore` in your `djangogirls` directory and add `local_settings.py` to it.  We want git to ignore `local_settings`, so it stays on our local computer and doesn't end up on Heroku.
+Abra o arquivo chamado `.gitignore` no seu diretório `djangogirls` e adicione `local_settings.py` nele.  Queremos que o git ignore `local_settings`, de forma que ele fique em nosso computador e não acabe subindo para o Heroku.
 
     *.pyc
     db.sqlite3
@@ -134,72 +134,71 @@ Open the file named `.gitignore` in your `djangogirls` directory and add `local_
     local_settings.py
 
 
-And we commit our changes
+E então fazemos o commit das nossas mudanças
 
     $ git status
     $ git add -A .
     $ git commit -m "additional files and changes for Heroku"
 
 
-## Pick an application name
+## Escolha um nome para a aplicação
 
-We'll be making your blog available on the Web at `[your blog's name].herokuapp.com`, so we need to choose a name that nobody else has taken. This name doesn't need to be related to the Django `blog` app or to `mysite` or anything we've created so far. The name can be anything you want, but Heroku is quite strict as to what characters you can use: you're only allowed to use simple lowercase letters (no capital letters or accents), numbers, and dashes (`-`).
+Tornaremos nosso blog disponível na Web no `[nome do seu blog].herokuapp.com`, então precisamos escolher um nome que ninguém pegou ainda. Esse nome não precisa estar relacionado ao app `blog` Django ou ao `mysite` ou a qualquer coisa que tenhamos criado até agora. O nome pode ser qualquer coisa que você queira, mas o Heroku é bem restrito quanto a quais caracteres você pode usar: você somente pode usar letras minúsculas simples (e não letras maiúsculas ou acentos), números e travessões (`-`).
 
-Once you've thought of a name (maybe something with your name or nickname in it), run this command, replacing `djangogirlsblog` with your own application name:
+Uma vez que você tenha pensado em um nome (talvez alguma coisa com seu nome ou apelido nele), execute esse comando, substituindo `djangogirlsblog` pelo nome da aplicação escolhido por você:
 
     $ heroku create djangogirlsblog
 
-> __Note__: Remember to replace `djangogirlsblog` with the name of your application on Heroku.
+> __Nota__: Lembre-se de substituir `djangogirlsblog` pelo nome da sua aplicação no Heroku.
 
-If you can't think of a name, you can instead run
+Se você não conseguir pensar em um nome, você pode executar
 
     $ heroku create
 
-and Heroku will pick an unused name for you (probably something like `enigmatic-cove-2527`).
+e o Heroku vai escolher um nome não utilizado para você (provavelmente algo do tipo `enigmatic-cove-2527`).
 
-If you ever feel like changing the name of your Heroku application, you can do so at any time with this command (replace `the-new-name` with the new name you want to use):
+Se você quiser mudar o nome da sua aplicação no Heroku, você pode fazê-lo, a qualquer tempo, com esse comando (substitua `the-new-name` pelo nome que você quer usar):
 
     $ heroku apps:rename the-new-name
 
-> __Note__: Remember that after you change your application's name, you'll need to visit `[the-new-name].herokuapp.com` to see your site.
+> __Nota__: Lembre-se que depois que alterar o nome da sua aplicação, você precisará visitar `[o-seu-novo-nome].herokuapp.com` para ver seu site.
 
-## Deploy to Heroku!
+## Implementando no Heroku!
 
-That was a lot of configuration and installing, right? But you only need to do that once! Now you can deploy!
+Foi um bocado de configuração e instalação, certo? Mas você precisa fazer isso apenas uma vez! Agora você pode implementar!
 
-When you ran `heroku create`, it automatically added the Heroku remote for our app to our repository. Now we can do a simple git push to deploy our application:
+Quando você executou `heroku create`, esse comando automaticamente adicionou o Heroku remoto para nosso app ao nosso repositório. Agora podemos fazer um simples  git push para implementar nossa aplicação:
 
     $ git push heroku master
 
-> __Note__: This will probably produce a *lot* of output the first time you run it, as Heroku compiles and installs psycopg. You'll know it's succeeded if you see something like `https://yourapplicationname.herokuapp.com/ deployed to Heroku` near the end of the output.
+> __Nota__: Isso provavelmente vai produzir um *monte* de saídas na primeira vez que você executar o comando, porque o Heroku compila e instala o psycopg. Você saberá que a execução foi bem-sucedida se vir alguma coisa como `https://yourapplicationname.herokuapp.com/ deployed to Heroku` próximo ao final das saídas.
 
-## Visit your application
+## Visite sua aplicação
 
-You’ve deployed your code to Heroku, and specified the process types in a `Procfile` (we chose a `web` process type earlier).
-We can now tell Heroku to start this `web process`.
+Você implementou seu código no Heroku e especificou os tipos de processo no `Procfile` (escolhemos o processo `web` anteriormente).
+Agora podemos dizer ao Heroku para iniciar esse processo web (`web process`).
 
-To do that, run the following command:
+Para fazer isso execute o seguinte comando:
 
     $ heroku ps:scale web=1
 
-This tells Heroku to run just one instance of our `web` process. Since our blog application is quite simple, we don't need too much power and so it's fine to run just one process. It's possible to ask Heroku to run more processes (by the way, Heroku calls these processes "Dynos" so don't be surprised if you see this term) but it will no longer be free.
+Isso dirá ao Heorku para exeuctar apenas uma instância do nosso processo "web". Como nosso blog é bem simples, não precisamos de muita coisa então está bem em executar somente um processo. É possível pedir ao Heroku para executar mais processos (a propósito, o Heroku chama esses processos de "Dynos", então não se surpreenda se você vir esse termo), mas isso não é mais gratuito.
 
-We can now visit the app in our browser with `heroku open`.
+Nós podemos agora visitar o app em nosso navegador com `heroku open`.
 
     $ heroku open
 
-> __Note__: you will see an error page! We'll talk about that in a minute.
+> __Nota__: você verá uma página de erro! Vamos falar disso em um minuto.
 
-This will open a url like [https://djangogirlsblog.herokuapp.com/]() in your browser, and at the moment you will probably see an error page.
+Isso vai abrir uma url tipo [https://djangogirlsblog.herokuapp.com/]() em seu navegador, e no momento, você provavelmente vai ver uma página de erro.
 
-The error you saw was because we when we deployed to Heroku, we created a new database and it's empty. We need to run the `migrate` and `createsuperuser` commands, just like we did on PythonAnywhere.  This time, they come via a special command-line on our own computer, `heroku run`:
+O erro que você viu foi causado pelo fato de quando implementamos no Heroku, criamos um novo banco de dados e ele está vazio. Precisamos executar os comandos `migrate` e `createsuperuser` como fizemos no PythonAnywhere.  Dessa vez, eles vêm através de uma linha de comando especial no seu computador `heroku run`:
 
     $ heroku run python manage.py migrate
 
     $ heroku run python manage.py createsuperuser
 
-The command prompt will ask you to choose a username and a password again. These will be your login details on your live website's admin page.
+O prompt de comando pedirá para você escolher um nome de usuário e senha novamente. Esses serão seus dados de login para a página de admin do seu website.
 
-
-Refresh it in your browser, and there you go!  You now know how to deploy to two different hosting platforms.  Pick your favourite :)
+Clique para atualizar em seu navegador e tá pronto!  Agora você sabe como implementar seu website em duas diferentes plataformas de hopedagem. Escolha a sua favorita :)
 

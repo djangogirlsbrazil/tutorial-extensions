@@ -1,12 +1,12 @@
 # Summary
 
-* [Introduction](README.md)
-* [Homework: add more to your website!](homework/README.md)
-* [Homework: secure your website](authentication_authorization/README.md)
-* [Homework: create comment model](homework_create_more_models/README.md)
-* [Optional: PostgreSQL installation](optional_postgresql_installation/README.md)
-* [Optional: Domain](domain/README.md)
-* [Deploy your website on Heroku](heroku/README.md)
+* [Introdução](README.md)
+* [Trabalho de casa: adicione mais em seu website!](homework/README.md)
+* [Trabalho de casa: adicione segurança para o seu website](authentication_authorization/README.md)
+* [Trabalho de casa: crie um modelo para comentários](homework_create_more_models/README.md)
+* [Opcional: instalação do PostgreSQL](optional_postgresql_installation/README.md)
+* [Opcional: Domínio](domain/README.md)
+* [Coloque seu website no Heroku](heroku/README.md)
 
 
 
